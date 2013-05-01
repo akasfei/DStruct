@@ -15,23 +15,7 @@ int CIO_getDataType (char * metadata)
     return -1;
 }
 
-DataObject *CIO_getDataContent (char * dataContent)
-{
-    int i, j;
-    char propertyCache[255];
-    DataObject *thisData = (DataObject *)malloc(sizeof (DataObject));
-    for (i=0, j=0; dataContent[i] != '?'; i++, j++)
-        propertyCache[j] = dataContent[i];
-    propertyCache[j] = '\0';
-    thisData->dataInt = atoi(propertyCache);
-    for (++i, j=0; dataContent[i] != '\n'; i++, j++)
-        propertyCache[j] = dataContent[i];
-    propertyCache[j] = '\0';
-    strcpy(thisData->dataText, propertyCache);
-    return thisData;
-}
-
-int *CIO_readDataFunc (char * filename, void *destClassP)
+int CIO_readData (char * filename, void *destClassP)
 {
     FILE *thisfile = fopen(filename, "r");
     char fileBuffer[255];
@@ -61,9 +45,26 @@ int *CIO_readDataFunc (char * filename, void *destClassP)
     return STS_OK;
 }
 
-typedef struct CoreIO
+int CIO_writeData (char * filename, void *srcClassP, int classType)
 {
-  char *fileName;
-  void *(*readData)(char *, int);
-  void *(*storeData)(char *, int);
-}CoreIO;
+    FILE *thisfile = fopen(filename, "w");
+    char meta[20], lineBuffer[80];
+    int i;
+    switch (classType) {
+        case 0:
+        {
+            LinearSheetClass_A *thisClass = (LinearSheetClass_A *) srcClassP;
+            meta = "META?LINEARSHEET";
+            fprintf(thisfile, "%s", meta);
+            for (i=0; i<thisClass->length; i++)
+            {
+                lineBuffer = DO_serialize(thisClass->data[i]);
+                fprintf(thisfile, "\n%s", lineBuffer);
+            }
+            break;
+        }
+        default:
+            return STS_FAIL;
+    }
+    fclose(thisfile);
+}
