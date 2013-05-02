@@ -26,7 +26,7 @@ int CIO_readData (char * filename, void *destClassP)
     do
     {
         fgets(fileBuffer, 255, thisfile);
-        thisData = CIO_getDataContent(fileBuffer);
+        thisData = DO_New_s(fileBuffer);
         switch ( dataType )
         {
             case CLASS_LSHEET:
@@ -54,11 +54,11 @@ int CIO_writeData (char * filename, void *srcClassP, int classType)
         case 0:
         {
             LinearSheetClass_A *thisClass = (LinearSheetClass_A *) srcClassP;
-            meta = "META?LINEARSHEET";
+            strcpy(meta, "META?LINEARSHEET");
             fprintf(thisfile, "%s", meta);
             for (i=0; i<thisClass->length; i++)
             {
-                lineBuffer = DO_serialize(thisClass->data[i]);
+                strcpy(lineBuffer, DO_serialize(thisClass->data[i]));
                 fprintf(thisfile, "\n%s", lineBuffer);
             }
             break;
@@ -67,4 +67,5 @@ int CIO_writeData (char * filename, void *srcClassP, int classType)
             return STS_FAIL;
     }
     fclose(thisfile);
+    return STS_OK;
 }

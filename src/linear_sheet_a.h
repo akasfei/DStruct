@@ -7,8 +7,9 @@ typedef struct LinearSheetClass_A
     int thisPos;
     int (*insert) (struct LinearSheetClass_A *, DataObject, int);
     int (*insertH) (struct LinearSheetClass_A *, DataObject);
-    int (*get) (struct LinearSheetClass_A *, int, DataObject);
-    int (*remove) (struct LinearSheetClass_A *, int, DataObject);
+    int (*get) (struct LinearSheetClass_A *, int, DataObject *);
+    int (*remove) (struct LinearSheetClass_A *, int, DataObject *);
+    int (*clear) (struct LinearSheetClass_A *L);
 }LinearSheetClass_A;
 
 int LinearSheetDestroy_A (LinearSheetClass_A *L)
@@ -110,6 +111,9 @@ int LinearSheetInit_A (LinearSheetClass_A *L)
     L->thisPos = 0;
     L->data = (DataObject *)malloc(LS_MAX * sizeof(DataObject) );
     L->insert = &LinearSheetInsert_A;
+    L->remove = &LinearSheetRemove_A;
+    L->get = &LinearSheetGet_A;
     L->insertH = &LinearSheetInsertH_A;
+    L->clear = &LinearSheetClear_A;
     return STS_OK;
 }

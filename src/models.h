@@ -13,7 +13,7 @@ void swapDataObject (DataObject * obj1, DataObject * obj2)
     return;
 }
 
-DataObject *DO_New (char * dataContent)
+DataObject *DO_New_s (char * dataContent)
 {
     int i, j;
     char propertyCache[255];
@@ -31,7 +31,6 @@ DataObject *DO_New (char * dataContent)
 
 DataObject *DO_New (int dataInt, char * dataText)
 {
-    int i, j;
     DataObject *thisData = (DataObject *)malloc(sizeof (DataObject));
     thisData->dataInt = dataInt;
     strcpy(thisData->dataText, dataText);
@@ -40,6 +39,6 @@ DataObject *DO_New (int dataInt, char * dataText)
 
 char * DO_serialize (DataObject obj) {
     char res[80];
-    sprintf(res, '%d\?%s', obj.dataInt, obj.dataText);
+    sprintf(res, "%d\?%s", obj.dataInt, obj.dataText);
     return res;
 }

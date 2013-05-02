@@ -1,21 +1,26 @@
-int LinearSheetInit (LinearSheetClass *L, LinearSheetObject newObj)
+typedef struct LinearSheetClass
 {
-  if (L->head != NULL)
-    return STS_FAIL;
-  L->_this = L->head = (LinearSheetObject *)malloc(sizeof LinearSheetObject);
-  if (L->head == NULL)
-    return STS_FAIL;
-  L->head->prev = L->head->next = NULL;
-  L->length = 1;
-  return STS_OK;
-}
+  struct LinearSheetObject *head, *_this;
+  int length;
+  int (*insert) (struct LinearSheetClass *, DataObject, int);
+  int (*insertH) (struct LinearSheetClass *, DataObject);
+  int (*get) (struct LinearSheetClass *, int, DataObject *);
+  int (*remove) (struct LinearSheetClass *, int, DataObject *);
+  int (*clear) (struct LinearSheetClass *L);
+}LinearSheetClass;
+
+typedef struct LinearSheetObject
+{
+  DataObject data;
+  struct LinearSheetObject *next, *prev;
+}LinearSheetObject;
 
 int LinearSheetDestroy (LinearSheetClass *L)
 {
   if (L->head != NULL)
     return STS_FAIL;
   L->_this = L->head;
-  for (; L->_this = L->_this->next; _this->next != NULL)
+  for (; L->_this = L->_this->next; L->_this->next != NULL)
   {
     if (L->_this->prev != NULL) {
       free(L->_this->prev);
@@ -31,9 +36,17 @@ int LinearSheetDestroy (LinearSheetClass *L)
 
 int LinearSheetInsert (LinearSheetClass *L, DataObject *obj, int position)
 {
-  if (L->_this == NULL)
-    L->_this = L->head;
-  LinearSheetObject *obj_to_ins = (LinearSheetObject *)malloc(sizeof LinearSheetObject)
+  int i;
+  if (position < 1 || position > L->length)
+    return STS_FAIL;
+  L->_this = L->head;
+  LinearSheetObject * obj_to_ins = (LinearSheetObject *)malloc(sizeof (LinearSheetObject));
+  for (i=1; i < position; i++, L->_this = L->_this->next);
+  L->_this->next->prev = obj_to_ins;
+  obj_to_ins->prev = L->_this;
+  obj_to_ins->next = L->_this->next;
+  L->_this->next = obj_to_ins;
+  L->length++;
   return STS_OK;
 }
 
@@ -49,7 +62,7 @@ int LinearSheetGet (LinearSheetClass *L, int position, DataObject *e)
   {
     L->_this = L->head;
     for (i=0; i<position; i++, L->_this = L->_this->next);
-    *e = L->_this;
+    e = &(L->_this->data);
     return STS_OK;
   }
   else
@@ -57,10 +70,10 @@ int LinearSheetGet (LinearSheetClass *L, int position, DataObject *e)
 }
 
 int LinearSheetQuery (LinearSheetClass *L, DataObject target, int (*compare)(DataObject obj1, DataObject obj2), DataObject *des)
-{    
-    for (L->_this = L->head; L->_this != NULL; i++, L->_this = L->_this->next)
+{
+    for (L->_this = L->head; L->_this != NULL; L->_this = L->_this->next)
     {
-        if ( (*compare) (L->_this, target) == 1 )
+        if ( (*compare) (L->_this->data, target) == 1 )
         {
             des = L->_this;
             return STS_OK;
@@ -81,25 +94,31 @@ int LinearSheetRemove (LinearSheetClass *L, int position, DataObject *removedObj
     return STS_OK;
 }
 
-int LinearSheetTraverse (LinearSheetClass *L, int (*visit) (DataObject))
+int LinearSheetTraverse (LinearSheetClass *L, int (*visit) (LinearSheetObject))
 {
-    for (L->_this = L->head; L->_this != NULL; i++, L->_this = L->_this->next)
+    int mark;
+    for (L->_this = L->head; L->_this != NULL; L->_this = L->_this->next)
     {
-        (*visit) (L->data[i]);
+        mark = (*visit) (*(L->_this));
+        if (mark > 0)
+            return STS_FAIL;
     }
     return STS_OK;
 }
 
-typedef struct LinearSheetClass
+int LinearSheetInit (LinearSheetClass *L, DataObject newObj)
 {
-  struct LinearSheetObject *head, *_this;
-  int length;
-  int (*insert) (LinearSheetClass *L, DataObject *obj, int position) = NULL;
-  int (*insertH) (LinearSheetClass *L, DataObject *obj) = NULL;
-}LinearSheetClass;
-
-typedef struct LinearSheetObject
-{
-  DataObject data;
-  struct LinearSheetObject *next = NULL, *prev = NULL;
-}LinearSheetObject;
+  if (L->head != NULL)
+    return STS_FAIL;
+  L->_this = L->head = (LinearSheetObject *)malloc(sizeof (LinearSheetObject));
+  if (L->head == NULL)
+    return STS_FAIL;
+  L->head->data = newObj;
+  L->head->prev = L->head->next = NULL;
+  L->length = 1;
+  L->insert = &LinearSheetInsert;
+  L->remove = &LinearSheetRemove;
+  L->get = &LinearSheetGet;
+  L->insertH = &LinearSheetInsertH;
+  return STS_OK;
+}
