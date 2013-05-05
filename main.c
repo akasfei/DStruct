@@ -5,6 +5,7 @@
 
 int main()
 {
-    printf("Hello world!\n");
+    CTRL_main();
+    CTRL_exit();
     return 0;
 }
