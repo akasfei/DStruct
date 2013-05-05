@@ -1,0 +1,29 @@
+# depslib dependency file v1.0
+1367757786 source:c:\users\sfei\documents\github\dstruct\main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"src\contorller_linearsheet.h"
+
+1367760427 c:\users\sfei\documents\github\dstruct\src\contorller_linearsheet.h
+	<stdio.h>
+	<stdlib.h>
+	"core.h"
+	"views.h"
+	"models.h"
+	"bintree.h"
+	"linear_sheet_A.h"
+	"coreio.h"
+
+1365501643 c:\users\sfei\documents\github\dstruct\src\core.h
+
+1367733770 c:\users\sfei\documents\github\dstruct\src\views.h
+
+1367757813 c:\users\sfei\documents\github\dstruct\src\models.h
+
+1367485569 c:\users\sfei\documents\github\dstruct\src\bintree.h
+
+1367759874 c:\users\sfei\documents\github\dstruct\src\linear_sheet_a.h
+
+1367759170 c:\users\sfei\documents\github\dstruct\src\coreio.h
+

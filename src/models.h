@@ -38,7 +38,7 @@ DataObject *DO_New (int dataInt, char * dataText)
 }
 
 char * DO_serialize (DataObject obj) {
-    char res[80];
+    static char res[80];
     sprintf(res, "%d\?%s", obj.dataInt, obj.dataText);
     return res;
 }

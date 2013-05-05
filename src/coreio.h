@@ -8,9 +8,9 @@ int CIO_getDataType (char * metadata)
         className[j] = metadata[i];
     }
     className[j] = '\0';
-    if ( strcmp(className, "LINEARSHEET") )
+    if ( !strcmp(className, "LINEARSHEET") )
         return CLASS_LSHEET;
-    if ( strcmp(className, "STACK") )
+    if ( !strcmp(className, "STACK") )
         return CLASS_STACK;
     return -1;
 }

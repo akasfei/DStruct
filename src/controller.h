@@ -31,7 +31,7 @@ int CTRL_main()
     if (CTRL_init(&LSheet) > 0)
         return STS_FAIL;
     menu:
-    RENDER_menu();
+    RENDER_menu_LS();
     scanf("%d", &cmd);
     getchar();
     switch (cmd)

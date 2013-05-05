@@ -14,7 +14,7 @@
 
 int CTRL_init(LinearSheetClass_A *LSheet)
 {
-    char filename[] = "data\\LinearSheet";
+    char filename[] = "data\\LinearSheet.db";
     int mark=0;
     mark += LinearSheetInit_A(LSheet);
     mark += CIO_readData(filename, (void *) LSheet);
@@ -44,7 +44,7 @@ int CTRL_main()
             scanf("%d", &ibuf);
             getchar();
             printf("Enter data field 2 (string): ");
-            scanf("%s", &sbuf);
+            scanf("%s", sbuf);
             getchar();
             printf("Insert position: ");
             scanf("%d", &pos);
@@ -63,7 +63,8 @@ int CTRL_main()
             mark = LSheet.get(&LSheet, pos, &obj);
             if (mark > 0)
                 printf("ERROR CODE %d.\n", mark);
-            printf("%s", DO_serialize(obj));
+            else
+                printf("%s\n", DO_serialize(obj));
             break;
         }
         case 4:
@@ -75,7 +76,8 @@ int CTRL_main()
             mark = LSheet.remove(&LSheet, pos, &obj);
             if (mark > 0)
                 printf("ERROR CODE %d.\n", mark);
-            printf("Removed object: %s", DO_serialize(obj));
+            else
+                printf("Removed object: %s\n", DO_serialize(obj));
             break;
         }
         case 5:
@@ -92,6 +94,8 @@ int CTRL_main()
             break;
         }
     }
+    printf("Press ENTER to continue.");
+    getchar();
     goto menu;
     return 0;
 }

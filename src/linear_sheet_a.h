@@ -49,6 +49,7 @@ int LinearSheetInsert_A (LinearSheetClass_A *L, DataObject obj, int position)
     for (i = L->length; i > position; i--)
         L->data[i] = L->data[i-1];
     L->data[position] = obj;
+    L->length++;
     return STS_OK;
 }
 
@@ -105,8 +106,6 @@ int LinearSheetInsertH_A (LinearSheetClass_A *L, DataObject obj)
 
 int LinearSheetInit_A (LinearSheetClass_A *L)
 {
-    if (L->length >=1)
-        return STS_FAIL;
     L->length = 0;
     L->thisPos = 0;
     L->data = (DataObject *)malloc(LS_MAX * sizeof(DataObject) );
