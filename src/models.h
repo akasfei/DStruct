@@ -22,7 +22,7 @@ DataObject *DO_New_s (char * dataContent)
         propertyCache[j] = dataContent[i];
     propertyCache[j] = '\0';
     thisData->dataInt = atoi(propertyCache);
-    for (++i, j=0; dataContent[i] != '\n'; i++, j++)
+    for (++i, j=0; dataContent[i] != '\n' && dataContent[i] != '\0'; i++, j++)
         propertyCache[j] = dataContent[i];
     propertyCache[j] = '\0';
     strcpy(thisData->dataText, propertyCache);
@@ -41,4 +41,9 @@ char * DO_serialize (DataObject obj) {
     static char res[80];
     sprintf(res, "%d\?%s", obj.dataInt, obj.dataText);
     return res;
+}
+
+int DO_print (DataObject obj) {
+    printf("%s\n", DO_serialize(obj));
+    return 0;
 }

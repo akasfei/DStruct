@@ -23,6 +23,16 @@ int CTRL_init(LinearSheetClass_A *LSheet)
     return STS_OK;
 }
 
+int CTRL_exit(LinearSheetClass_A * thisClass)
+{
+    int mark;
+    printf("Saving and Exiting...");
+    mark = CIO_writeData("data\\LinearSheet.db", (void *)thisClass, CLASS_LSHEET);
+    if (mark > 0)
+        printf("ERROR %d", mark);
+    return mark;
+}
+
 int CTRL_main()
 {
     int cmd, ibuf, pos, mark;
@@ -37,7 +47,7 @@ int CTRL_main()
     switch (cmd)
     {
         case 0:
-            return 0;
+            return CTRL_exit((void *)&LSheet);
         case 1:
         {
             printf("Enter data field 1 (int): ");
@@ -82,7 +92,6 @@ int CTRL_main()
         }
         case 5:
         {
-            DataObject obj;
             printf("Input 32767 to confirm: ");
             scanf("%d", &pos);
             getchar();
@@ -91,6 +100,12 @@ int CTRL_main()
                 mark = LSheet.clear(&LSheet);
             if (mark > 0)
                 printf("ERROR CODE %d.\n", mark);
+            break;
+        }
+        case 6:
+        {
+            int (*print)(DataObject) = &DO_print;
+            LinearSheetTraverse_A(&LSheet, print);
             break;
         }
     }

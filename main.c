@@ -5,7 +5,6 @@
 
 int main()
 {
-    CTRL_main();
-    //CTRL_exit();
-    return 0;
+	printf("DataStructure Demo System v0.1.1");
+    return CTRL_main();
 }

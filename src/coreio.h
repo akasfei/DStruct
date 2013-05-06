@@ -32,7 +32,7 @@ int CIO_readData (char * filename, void *destClassP)
             case CLASS_LSHEET:
             {
                 LinearSheetClass_A *thisClass = (LinearSheetClass_A *)destClassP;
-                thisClass->insertH(thisClass, *thisData);
+                thisClass->insert(thisClass, *thisData, thisClass->length);
                 break;
             }
             default:
@@ -51,7 +51,7 @@ int CIO_writeData (char * filename, void *srcClassP, int classType)
     char meta[20], lineBuffer[80];
     int i;
     switch (classType) {
-        case 0:
+        case CLASS_LSHEET:
         {
             LinearSheetClass_A *thisClass = (LinearSheetClass_A *) srcClassP;
             strcpy(meta, "META?LINEARSHEET");
