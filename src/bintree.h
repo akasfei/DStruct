@@ -44,7 +44,13 @@ int BinTreeView (BinTreeClass *T)
         return STS_FAIL;
     if (T->_this == NULL)
         T->_this = T->root;
-    printf("Current selection: %s\nParent: %s\nLeft Child:%s\nRight Child:%s\n", DO_serialize(T->_this->data), DO_serialize(T->_this->parent->data) , DO_serialize(T->_this->lchild->data) , DO_serialize(T->_this->rchild->data));
+    printf("Current selection: %s\n", DO_serialize(T->_this->data));
+    if (T->_this->parent != NULL)
+        printf("Parent: %s\n", DO_serialize(T->_this->parent->data));
+    if (T->_this->lchild != NULL)
+        printf("left child: %s\n", DO_serialize(T->_this->lchild->data));
+    if (T->_this->rchild != NULL)
+        printf("right child: %s\n", DO_serialize(T->_this->rchild->data));
     return STS_OK;
 }
 
@@ -197,7 +203,15 @@ int BinTreeTraverse_L (BinTreeClass *T, int (*visit) (BinTreeObject, BinTreeClas
 int BinTreeInsert (BinTreeClass *T, int pos, DataObject obj) // 1 to insert as left child, 2 to insert as right child.
 {
     if (T->root == NULL)
-        return STS_FAIL;
+    {
+        T->root = (BinTreeObject *)malloc(sizeof(BinTreeObject));
+        T->count++;
+        T->height++;
+        T->root->depth = 1;
+        T->root->parent = T->root->lchild = T->root->rchild = NULL;
+        T->root->data = obj;
+        return STS_OK;
+    }
     if (T->_this == NULL)
         T->_this = T->root;
     BinTreeObject *ithis = (BinTreeObject *)malloc(sizeof(BinTreeObject));
@@ -208,7 +222,6 @@ int BinTreeInsert (BinTreeClass *T, int pos, DataObject obj) // 1 to insert as l
         T->height++;
     ithis->parent = T->_this;
     ithis->lchild = ithis->rchild = NULL;
-    ithis = (BinTreeObject *)malloc(sizeof(BinTreeObject));
     ithis->depth = T->_this->depth + 1;
     ithis->data = obj;
     if (pos == 1)
@@ -221,7 +234,7 @@ int BinTreeInsert (BinTreeClass *T, int pos, DataObject obj) // 1 to insert as l
     return STS_OK;
 }
 
-int countLeave (BinTreeObject obj, BinTreeClass *T)
+int countLeaf (BinTreeObject obj, BinTreeClass *T)
 {
     T->count++;
     return STS_OK;
@@ -232,7 +245,7 @@ int BinTreeUpdateCount (BinTreeClass *T)
     if (T->root == NULL)
         return STS_FAIL;
     T->count = 0;
-    BinTreeTraverse(T, &countLeave);
+    BinTreeTraverse(T, &countLeaf);
     printf("Leave count: %d", T->count);
     return STS_OK;
 }
@@ -254,16 +267,25 @@ int BinTreeUpdateHeight (BinTreeClass *T)
     return STS_OK;
 }
 
-int BinTreeInit (BinTreeClass *T, DataObject firstObj)
+int BinTreeRemove (BinTreeClass *T)
 {
-    if (T->root == NULL)
+    BinTreeObject *_this;
+    if (T->_this == NULL || T->_this->lchild != NULL || T->_this->rchild != NULL)
         return STS_FAIL;
-    T->root = T->_this = (BinTreeObject *)malloc(sizeof(BinTreeObject));
-    if (T->root == NULL)
-        return STS_FAIL;
-    T->root->data = firstObj;
-    T->root->parent = T->root->lchild = T->root->rchild = NULL;
-    T->count = 1;
-    T->height = 1;
+    _this = T->_this;
+    T->_this = T->_this->parent;
+    free(_this);
+    return STS_OK;
+}
+
+int BinTreeInit (BinTreeClass *T)
+{
+    //T->root = T->_this = (BinTreeObject *)malloc(sizeof(BinTreeObject));
+    //if (T->root == NULL)
+    //    return STS_FAIL;
+    //T->root->data = firstObj;
+    T->root = T->_this = NULL;
+    T->count = 0;
+    T->height = 0;
     return STS_OK;
 }

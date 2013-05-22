@@ -10,8 +10,8 @@ int CIO_getDataType (char * metadata)
     className[j] = '\0';
     if ( !strcmp(className, "LINEARSHEET") )
         return CLASS_LSHEET;
-    if ( !strcmp(className, "STACK") )
-        return CLASS_STACK;
+    if ( !strcmp(className, "BINTREE") )
+        return CLASS_BTREE;
     return -1;
 }
 
@@ -33,6 +33,12 @@ int CIO_readData (char * filename, void *destClassP)
             {
                 LinearSheetClass_A *thisClass = (LinearSheetClass_A *)destClassP;
                 thisClass->insert(thisClass, *thisData, thisClass->length);
+                break;
+            }
+            case CLASS_BTREE:
+            {
+                BinTreeClass *thisClass = (BinTreeClass *)destClassP;
+                BinTreeInsert(thisClass, 0, *thisData);
                 break;
             }
             default:
